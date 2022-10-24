@@ -16,7 +16,7 @@ const html = `<!DOCTYPE html>
 <body>
 <ul>
 
-${ posts.map(post => `<li>${post.title}, ${post.name})}</li>`)}
+${ posts.map(post => `<li>${post.title}, ${post.name}</li>`)}
 // Review .join() to get rid of commas from list
 </ul>
 </body>
