@@ -3,6 +3,9 @@ const app = express();
 const morgan = require('morgan');
 const postBank = require("./postBank");
 const path= require('path')
+const timeAgo = require('node-time-ago');
+
+
 app.use(morgan('dev'))
 
 app.use(express.static(path.join(__dirname,'public')))
@@ -29,7 +32,7 @@ const html = `<!DOCTYPE html>
           <small>(by ${post.name})</small>
         </p>
         <small class="news-info">
-          ${post.upvotes} upvotes | ${post.date}
+          ${post.upvotes} upvotes | ${timeAgo(post.date)}
         </small>
       </div>`
     ).join('')}
@@ -73,7 +76,7 @@ app.get('/posts/:id', (req, res, next) => {
 </head>
 <body>
 <header><img src="/logo.png"/>Wizard News</header>
-<div class="news-list"><p>${post.title}, <small>(by ${post.name})</small></p><p> ${post.date},${post.content}</p></div>
+<div class="news-list"><p>${post.title}, <small>(by ${post.name})</small> <small>${timeAgo(post.date)}.</small></p><p>${post.content}</p></div>
 </body>
 </html>`
 
@@ -82,7 +85,12 @@ res.send(html)
   }
 })
 
+app.use((error, req, res, next)=>{
+  console.error('there is an error:', error)
+  if(res.statusCode < 400){res.status(500)}
 
+  res.send({error:error.message, message:error.message})
+  });
 
 const PORT = 1337;
 
